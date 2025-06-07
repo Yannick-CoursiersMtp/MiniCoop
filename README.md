@@ -28,6 +28,7 @@ coursier.py  # courier dashboard
 resto.py   # restaurant interface
 data.csv   # shared order storage
 .devcontainer/devcontainer.json  # configuration for Codespaces/devcontainers
+frontend/  # React application
 ```
 
 ## Development container
@@ -50,3 +51,16 @@ Run it locally with:
 ```bash
 uvicorn backend.main:app --reload
 ```
+
+## React frontend
+
+The `frontend/` directory contains a React application built with Vite and Material UI.
+Start it with:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+The app expects the FastAPI backend to be running on `http://localhost:8000`.

@@ -3,3 +3,7 @@ __pycache__/
 
 # Order data
 data.csv
+
+# Frontend artifacts
+frontend/node_modules/
+frontend/dist/
