@@ -1,43 +1,23 @@
 import streamlit as st
-import pandas as pd
+import requests
+import os
 
 st.title("MiniCoop - Interface Coursier")
 
 nom = st.text_input("Ton prénom (coursier)")
 
-if nom:
-    try:
-        commandes = pd.read_csv(
-            "data.csv",
-            names=[
-                "nom",
-                "adresse",
-                "restaurant",
-                "plat",
-                "heure",
-                "coursier",
-                "timestamp",
-            ],
-        )
-        missions = commandes[commandes["coursier"] == nom]
-        if missions.empty:
-            st.info("Aucune livraison prévue.")
-        else:
-            for _, row in missions.iterrows():
-                st.success(
-                    f"{row['plat']} à livrer pour {row['nom']} "
-                    f"à {row['adresse']} à {row['heure']}"
-                )
-    except (FileNotFoundError, pd.errors.EmptyDataError):
-        st.warning("Aucune commande trouvée.")
-        commandes = pd.DataFrame(
-            columns=[
-                "nom",
-                "adresse",
-                "restaurant",
-                "plat",
-                "heure",
-                "coursier",
-                "timestamp",
-            ]
-        )
+if nom and os.environ.get("STREAMLIT_SERVER_RUNNING"):
+    resp = requests.get("http://localhost:8000/orders")
+    if resp.ok:
+        commandes = [c for c in resp.json() if c["coursier"] == nom]
+    else:
+        commandes = []
+
+    if not commandes:
+        st.info("Aucune livraison prévue.")
+    else:
+        for order in commandes:
+            st.success(
+                f"{order['plat']} à livrer pour {order['nom']} "
+                f"à {order['adresse']} à {order['heure']}"
+            )

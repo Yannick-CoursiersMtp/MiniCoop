@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, Integer, String, DateTime, Boolean
 from datetime import datetime
 
 from .database import Base
@@ -16,6 +16,7 @@ class Order(Base):
     heure = Column(String)
     coursier = Column(String, nullable=True)
     timestamp = Column(String, default=lambda: datetime.now().isoformat())
+    ready = Column(Boolean, default=False)
 
 
 class OrderCreate(BaseModel):

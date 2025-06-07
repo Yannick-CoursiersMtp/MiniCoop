@@ -1,7 +1,9 @@
 import streamlit as st
-import pandas as pd
 from datetime import datetime
 import json
+import requests
+import websocket
+import threading
 
 st.set_page_config(
     page_title="MiniCoop - Passer une commande",
@@ -49,14 +51,34 @@ with st.container():
     st.markdown("</div>", unsafe_allow_html=True)
 
 if envoyer:
-    nouvelle_commande = pd.DataFrame([{
-        "nom": nom,
-        "adresse": adresse,
-        "restaurant": restaurant,
-        "plat": plat,
-        "heure": heure.strftime("%H:%M"),
-        "coursier": "",
-        "timestamp": datetime.now().isoformat()
-    }])
-    nouvelle_commande.to_csv("data.csv", mode="a", header=False, index=False)
-    st.success("Commande envoyée avec succès !")
+    resp = requests.post(
+        "http://localhost:8000/orders",
+        json={
+            "nom": nom,
+            "adresse": adresse,
+            "restaurant": restaurant,
+            "plat": plat,
+            "heure": heure.strftime("%H:%M"),
+        },
+    )
+    if resp.ok:
+        data = resp.json()
+        order_id = data["id"]
+        st.success("Commande envoyée avec succès !")
+
+        status = st.empty()
+
+        def listen():
+            ws = websocket.create_connection(f"ws://localhost:8000/ws/orders/{order_id}")
+            while True:
+                msg = ws.recv()
+                event = json.loads(msg)
+                if event.get("event") == "assigned":
+                    status.info(f"Coursier assigné : {event['courier']}")
+                elif event.get("event") == "ready":
+                    status.success("Votre commande est prête !")
+                    break
+
+        threading.Thread(target=listen, daemon=True).start()
+    else:
+        st.error("Erreur lors de l'envoi de la commande")

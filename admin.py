@@ -1,49 +1,37 @@
 import streamlit as st
-import pandas as pd
+import requests
 
 st.title("MiniCoop - Interface Admin")
 
-try:
-    commandes = pd.read_csv(
-        "data.csv",
-        names=[
-            "nom",
-            "adresse",
-            "restaurant",
-            "plat",
-            "heure",
-            "coursier",
-            "timestamp",
-        ],
-    )
-except (FileNotFoundError, pd.errors.EmptyDataError):
-    st.warning("Aucune commande pour le moment.")
-    commandes = pd.DataFrame(
-        columns=[
-            "nom",
-            "adresse",
-            "restaurant",
-            "plat",
-            "heure",
-            "coursier",
-            "timestamp",
-        ]
-    )
+import os
 
-for index, row in commandes.iterrows():
-    st.subheader(f"Commande de {row['nom']}")
+if os.environ.get("STREAMLIT_SERVER_RUNNING"):
+    resp = requests.get("http://localhost:8000/orders")
+    if resp.ok:
+        commandes = resp.json()
+    else:
+        st.warning("Aucune commande pour le moment.")
+        commandes = []
+else:
+    commandes = []
+
+for order in commandes:
+    st.subheader(f"Commande de {order['nom']}")
     st.write(
-        f"Plat : {row['plat']} | Resto : {row['restaurant']} | "
-        f"Heure : {row['heure']}"
+        f"Plat : {order['plat']} | Resto : {order['restaurant']} | Heure : {order['heure']}"
     )
-    st.write(f"Adresse : {row['adresse']}")
+    st.write(f"Adresse : {order['adresse']}")
     coursier = st.text_input(
         "Affecter un coursier à cette commande :",
-        value=row["coursier"],
-        key=index,
+        value=order.get("coursier", ""),
+        key=order["id"],
     )
-    if st.button("Affecter", key=f"affecter-{index}"):
-        commandes.at[index, "coursier"] = coursier
-        commandes.to_csv("data.csv", index=False, header=False)
-        st.session_state[index] = coursier
-        st.success(f"{coursier} assigné à la commande.")
+    if st.button("Affecter", key=f"affecter-{order['id']}"):
+        resp = requests.put(
+            f"http://localhost:8000/orders/{order['id']}/assign",
+            json={"coursier": coursier},
+        )
+        if resp.ok:
+            st.success(f"{coursier} assigné à la commande.")
+        else:
+            st.error("Erreur lors de l'assignation")

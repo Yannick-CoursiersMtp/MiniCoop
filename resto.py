@@ -1,5 +1,6 @@
 import streamlit as st
-import pandas as pd
+import requests
+import os
 
 st.title("MiniCoop - Interface Restaurant")
 
@@ -8,49 +9,26 @@ nom_resto = st.selectbox(
     ["Pizza MTP", "Tacos Deluxe", "Vegan Bowl"],
 )
 
-try:
-    commandes = pd.read_csv(
-        "data.csv",
-        names=[
-            "nom",
-            "adresse",
-            "restaurant",
-            "plat",
-            "heure",
-            "coursier",
-            "timestamp",
-        ],
-    )
-    commandes_resto = commandes[commandes["restaurant"] == nom_resto]
-
-    if commandes_resto.empty:
-        st.info("Aucune commande en attente.")
+if os.environ.get("STREAMLIT_SERVER_RUNNING"):
+    resp = requests.get("http://localhost:8000/orders")
+    if resp.ok:
+        commandes = [c for c in resp.json() if c["restaurant"] == nom_resto]
     else:
-        for index, row in commandes_resto.iterrows():
-            st.subheader(f"Commande de {row['nom']}")
-            st.write(
-                f"Plat : {row['plat']} | Adresse : {row['adresse']} | "
-                f"Heure : {row['heure']}"
-            )
-            st.write(
-                "Coursier assigné : "
-                f"{row['coursier'] if row['coursier'] else 'Pas encore'}"
-            )
-            st.button(
-                "Commande prête",
-                key=f"prête-{index}",
-            )  # (action pas encore enregistrée)
+        commandes = []
+else:
+    commandes = []
 
-except (FileNotFoundError, pd.errors.EmptyDataError):
-    st.warning("Aucune commande disponible.")
-    commandes = pd.DataFrame(
-        columns=[
-            "nom",
-            "adresse",
-            "restaurant",
-            "plat",
-            "heure",
-            "coursier",
-            "timestamp",
-        ]
-    )
+if not commandes:
+    st.info("Aucune commande en attente.")
+else:
+    for order in commandes:
+        st.subheader(f"Commande de {order['nom']}")
+        st.write(
+            f"Plat : {order['plat']} | Adresse : {order['adresse']} | Heure : {order['heure']}"
+        )
+        st.write(
+            "Coursier assigné : "
+            f"{order['coursier'] if order['coursier'] else 'Pas encore'}"
+        )
+        if st.button("Commande prête", key=f"prête-{order['id']}"):
+            requests.put(f"http://localhost:8000/orders/{order['id']}/ready")
