@@ -13,8 +13,13 @@ for index, row in commandes.iterrows():
     st.subheader(f"Commande de {row['nom']}")
     st.write(f"Plat : {row['plat']} | Resto : {row['restaurant']} | Heure : {row['heure']}")
     st.write(f"Adresse : {row['adresse']}")
-    coursier = st.text_input(f"Affecter un coursier à cette commande :", key=index)
+    coursier = st.text_input(
+        "Affecter un coursier à cette commande :",
+        value=row["coursier"],
+        key=index,
+    )
     if st.button("Affecter", key=f"affecter-{index}"):
-        commandes.at[index, 'coursier'] = coursier
+        commandes.at[index, "coursier"] = coursier
         commandes.to_csv("data.csv", index=False, header=False)
+        st.session_state[index] = coursier
         st.success(f"{coursier} assigné à la commande.")
