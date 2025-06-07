@@ -28,3 +28,19 @@ class OrderCreate(BaseModel):
 
 class OrderAssign(BaseModel):
     coursier: str
+
+
+class Payment(Base):
+    __tablename__ = "payments"
+
+    id = Column(Integer, primary_key=True, index=True)
+    order_id = Column(Integer, index=True)
+    amount = Column(Integer)
+    status = Column(String)
+    timestamp = Column(String, default=lambda: datetime.now().isoformat())
+
+
+class PaymentCreate(BaseModel):
+    order_id: int
+    amount: int
+    status: str

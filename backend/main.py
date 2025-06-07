@@ -60,3 +60,25 @@ def assign_courier(order_id: int, assignment: models.OrderAssign, db: Session = 
     order.coursier = assignment.coursier
     db.commit()
     return {"status": "assigned"}
+
+
+@app.post("/payments", response_model=dict)
+def create_payment(payment: models.PaymentCreate, db: Session = Depends(get_db)):
+    order = db.query(models.Order).filter(models.Order.id == payment.order_id).first()
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+    db_payment = models.Payment(
+        order_id=payment.order_id,
+        amount=payment.amount,
+        status=payment.status,
+        timestamp=datetime.now().isoformat(),
+    )
+    db.add(db_payment)
+    db.commit()
+    db.refresh(db_payment)
+    return {
+        "id": db_payment.id,
+        "order_id": db_payment.order_id,
+        "amount": db_payment.amount,
+        "status": db_payment.status,
+    }

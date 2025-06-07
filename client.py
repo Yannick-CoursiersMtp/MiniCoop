@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime
 import json
+import requests
 
 st.set_page_config(
     page_title="MiniCoop - Passer une commande",
@@ -49,14 +50,25 @@ with st.container():
     st.markdown("</div>", unsafe_allow_html=True)
 
 if envoyer:
-    nouvelle_commande = pd.DataFrame([{
+    payload = {
         "nom": nom,
         "adresse": adresse,
         "restaurant": restaurant,
         "plat": plat,
         "heure": heure.strftime("%H:%M"),
-        "coursier": "",
-        "timestamp": datetime.now().isoformat()
-    }])
-    nouvelle_commande.to_csv("data.csv", mode="a", header=False, index=False)
-    st.success("Commande envoyée avec succès !")
+    }
+    try:
+        resp = requests.post("http://localhost:8000/orders", json=payload)
+        resp.raise_for_status()
+        data = resp.json()
+        nouvelle_commande = pd.DataFrame([
+            {**payload, "coursier": "", "timestamp": data["timestamp"]}
+        ])
+        nouvelle_commande.to_csv("data.csv", mode="a", header=False, index=False)
+        pay_payload = {"order_id": data["id"], "amount": 10, "status": "pending"}
+        pay_resp = requests.post("http://localhost:8000/payments", json=pay_payload)
+        pay_resp.raise_for_status()
+        st.success("Commande envoyée avec succès !")
+    except Exception as e:
+        st.error(f"Erreur lors de l'envoi: {e}")
+
