@@ -1,32 +1,25 @@
 import streamlit as st
-import pandas as pd
+import requests
 
-st.title("MiniCoop - Interface Restaurant")
 
-nom_resto = st.selectbox(
-    "Choisissez votre restaurant",
-    ["Pizza MTP", "Tacos Deluxe", "Vegan Bowl"],
-)
+def main():
+    st.title("MiniCoop - Interface Restaurant")
 
-try:
-    commandes = pd.read_csv(
-        "data.csv",
-        names=[
-            "nom",
-            "adresse",
-            "restaurant",
-            "plat",
-            "heure",
-            "coursier",
-            "timestamp",
-        ],
+    nom_resto = st.selectbox(
+        "Choisissez votre restaurant",
+        ["Pizza MTP", "Tacos Deluxe", "Vegan Bowl"],
     )
-    commandes_resto = commandes[commandes["restaurant"] == nom_resto]
 
-    if commandes_resto.empty:
+    API_URL = "http://localhost:8000"
+
+    response = requests.get(f"{API_URL}/orders")
+    commandes = response.json() if response.ok else []
+    commandes_resto = [c for c in commandes if c["restaurant"] == nom_resto]
+
+    if not commandes_resto:
         st.info("Aucune commande en attente.")
     else:
-        for index, row in commandes_resto.iterrows():
+        for index, row in enumerate(commandes_resto):
             st.subheader(f"Commande de {row['nom']}")
             st.write(
                 f"Plat : {row['plat']} | Adresse : {row['adresse']} | "
@@ -41,16 +34,6 @@ try:
                 key=f"prête-{index}",
             )  # (action pas encore enregistrée)
 
-except (FileNotFoundError, pd.errors.EmptyDataError):
-    st.warning("Aucune commande disponible.")
-    commandes = pd.DataFrame(
-        columns=[
-            "nom",
-            "adresse",
-            "restaurant",
-            "plat",
-            "heure",
-            "coursier",
-            "timestamp",
-        ]
-    )
+
+if __name__ == "__main__":
+    main()
