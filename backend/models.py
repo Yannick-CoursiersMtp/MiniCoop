@@ -53,3 +53,8 @@ class Payment(Base):
     order_id = Column(Integer, ForeignKey("orders.id"), nullable=False)
     amount = Column(Float, nullable=True)
     status = Column(String, default="pending")
+
+
+class PaymentCreate(BaseModel):
+    order_id: int
+    amount: float | None = None

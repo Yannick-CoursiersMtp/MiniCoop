@@ -44,6 +44,7 @@ A small API built with FastAPI is available under `backend/`. It stores orders i
 - `POST /orders` — create a new order.
 - `GET /orders` — list all orders.
 - `PUT /orders/{id}/assign` — assign a courier to an order.
+- `POST /payments` — register a payment for an order.
 
 Run it locally with:
 

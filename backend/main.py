@@ -60,3 +60,16 @@ def assign_courier(order_id: int, assignment: models.OrderAssign, db: Session = 
     order.coursier = assignment.coursier
     db.commit()
     return {"status": "assigned"}
+
+
+@app.post("/payments", response_model=dict)
+def create_payment(payment: models.PaymentCreate, db: Session = Depends(get_db)):
+    db_payment = models.Payment(
+        order_id=payment.order_id,
+        amount=payment.amount,
+        status="paid",
+    )
+    db.add(db_payment)
+    db.commit()
+    db.refresh(db_payment)
+    return {"id": db_payment.id, "status": db_payment.status}

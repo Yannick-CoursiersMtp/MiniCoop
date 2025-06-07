@@ -64,6 +64,12 @@ def main():
         }
         response = requests.post(f"{API_URL}/orders", json=payload)
         if response.status_code == 200:
+            order_id = response.json()["id"]
+            # create a payment record for this order
+            requests.post(
+                f"{API_URL}/payments",
+                json={"order_id": order_id, "amount": 0},
+            )
             st.success("Commande envoyée avec succès !")
         else:
             st.error("Erreur lors de l'envoi de la commande.")
