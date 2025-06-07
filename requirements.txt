@@ -5,3 +5,5 @@ uvicorn
 sqlalchemy
 pydantic
 requests
+
+httpx<0.25
