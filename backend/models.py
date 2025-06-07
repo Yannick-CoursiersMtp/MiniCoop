@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, Integer, String
 from datetime import datetime
 
 from .database import Base
@@ -28,3 +28,23 @@ class OrderCreate(BaseModel):
 
 class OrderAssign(BaseModel):
     coursier: str
+
+
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True)
+    email = Column(String, unique=True, index=True)
+    password_hash = Column(String)
+    role = Column(String)
+
+
+class UserCreate(BaseModel):
+    email: str
+    password: str
+    role: str
+
+
+class UserLogin(BaseModel):
+    email: str
+    password: str
