@@ -6,7 +6,11 @@ st.title("MiniCoop - Interface Restaurant")
 nom_resto = st.selectbox("Choisissez votre restaurant", ["Pizza MTP", "Tacos Deluxe", "Vegan Bowl"])
 
 try:
-    commandes = pd.read_csv("data.csv", names=["nom", "adresse", "restaurant", "plat", "heure", "coursier", "timestamp"])
+    commandes = pd.read_csv(
+        "data.csv",
+        names=["nom", "adresse", "restaurant", "plat", "heure", "coursier", "timestamp"],
+        header=None,
+    )
     commandes_resto = commandes[commandes["restaurant"] == nom_resto]
 
     if commandes_resto.empty:

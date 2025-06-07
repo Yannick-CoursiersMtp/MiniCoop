@@ -7,7 +7,11 @@ nom = st.text_input("Ton prénom (coursier)")
 
 if nom:
     try:
-        commandes = pd.read_csv("data.csv", names=["nom", "adresse", "restaurant", "plat", "heure", "coursier", "timestamp"])
+        commandes = pd.read_csv(
+            "data.csv",
+            names=["nom", "adresse", "restaurant", "plat", "heure", "coursier", "timestamp"],
+            header=None,
+        )
         missions = commandes[commandes["coursier"] == nom]
         if missions.empty:
             st.info("Aucune livraison prévue.")
