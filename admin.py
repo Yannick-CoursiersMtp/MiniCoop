@@ -4,10 +4,15 @@ import pandas as pd
 st.title("MiniCoop - Interface Admin")
 
 try:
-    commandes = pd.read_csv("data.csv", names=["nom", "adresse", "restaurant", "plat", "heure", "coursier", "timestamp"])
-except FileNotFoundError:
+    commandes = pd.read_csv(
+        "data.csv",
+        names=["nom", "adresse", "restaurant", "plat", "heure", "coursier", "timestamp"],
+    )
+except (FileNotFoundError, pd.errors.EmptyDataError):
     st.warning("Aucune commande pour le moment.")
-    commandes = pd.DataFrame(columns=["nom", "adresse", "restaurant", "plat", "heure", "coursier", "timestamp"])
+    commandes = pd.DataFrame(
+        columns=["nom", "adresse", "restaurant", "plat", "heure", "coursier", "timestamp"]
+    )
 
 for index, row in commandes.iterrows():
     st.subheader(f"Commande de {row['nom']}")
