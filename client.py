@@ -6,7 +6,10 @@ st.title("MiniCoop - Passer une commande")
 
 nom = st.text_input("Nom du client")
 adresse = st.text_input("Adresse de livraison")
-restaurant = st.selectbox("Choisissez un restaurant", ["Pizza MTP", "Tacos Deluxe", "Vegan Bowl"])
+restaurant = st.selectbox(
+    "Choisissez un restaurant",
+    ["Pizza MTP", "Tacos Deluxe", "Vegan Bowl"],
+)
 plat = st.text_input("Plat commandé")
 heure = st.time_input("Heure de livraison souhaitée")
 
