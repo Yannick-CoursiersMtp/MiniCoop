@@ -50,3 +50,15 @@ Run it locally with:
 ```bash
 uvicorn backend.main:app --reload
 ```
+
+## Docker Compose
+
+You can run the API, optional React frontend, and a Postgres database using the
+provided `docker-compose.yml`:
+
+```bash
+docker-compose up --build
+```
+
+The backend will be available on port `8000` and the frontend on `3000` once the
+React app has been built.
