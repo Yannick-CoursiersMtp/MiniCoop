@@ -11,7 +11,13 @@ Orders are stored in a CSV file (`data.csv`). Each component of the workflow rea
 
 ## Running locally
 
-Make sure `streamlit` is installed and run any of the interfaces. For example to launch the restaurant view:
+Install the required Python packages and run any of the interfaces. For example to launch the restaurant view:
+
+```bash
+pip install -r requirements.txt
+```
+
+Then start the Streamlit app:
 
 ```bash
 streamlit run resto.py
@@ -32,5 +38,5 @@ data.csv   # shared order storage
 
 ## Development container
 
-The project includes a devcontainer configuration. When used inside GitHub Codespaces or a compatible environment it installs dependencies and automatically launches `resto.py`.
+The project includes a devcontainer configuration. When used inside GitHub Codespaces or a compatible environment it installs dependencies from `requirements.txt` and automatically launches `resto.py`.
 
