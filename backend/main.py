@@ -53,7 +53,11 @@ def list_orders(db: Session = Depends(get_db)):
 
 
 @app.put("/orders/{order_id}/assign")
-def assign_courier(order_id: int, assignment: models.OrderAssign, db: Session = Depends(get_db)):
+def assign_courier(
+    order_id: int,
+    assignment: models.OrderAssign,
+    db: Session = Depends(get_db),
+):
     order = db.query(models.Order).filter(models.Order.id == order_id).first()
     if not order:
         raise HTTPException(status_code=404, detail="Order not found")
@@ -63,7 +67,10 @@ def assign_courier(order_id: int, assignment: models.OrderAssign, db: Session = 
 
 
 @app.post("/payments", response_model=dict)
-def create_payment(payment: models.PaymentCreate, db: Session = Depends(get_db)):
+def create_payment(
+    payment: models.PaymentCreate,
+    db: Session = Depends(get_db),
+):
     db_payment = models.Payment(
         order_id=payment.order_id,
         amount=payment.amount,
