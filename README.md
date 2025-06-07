@@ -7,7 +7,7 @@ MiniCoop is a simple demo of a food delivery workflow built with [Streamlit](htt
 - **Admin** (`admin.py`) – assign a courier to each order.
 - **Courrier** (`coursier.py`) – see the deliveries assigned to a given courier.
 
-Orders are stored in a CSV file (`data.csv`). Each component of the workflow reads or writes to this file. The interfaces are meant for local demonstrations, so there is no authentication or persistence beyond the CSV file.
+Orders are stored in a CSV file named `data.csv`. The file is listed in `.gitignore` so that example orders are not committed to the repository. Each component of the workflow reads or writes to this file. The interfaces are meant for local demonstrations, so there is no authentication or persistence beyond the CSV file.
 
 ## Running locally
 
@@ -33,4 +33,6 @@ data.csv   # shared order storage
 ## Development container
 
 The project includes a devcontainer configuration. When used inside GitHub Codespaces or a compatible environment it installs dependencies and automatically launches `resto.py`.
+
+The devcontainer provides a ready-to-use development environment. It sets up Python 3 with all required packages and starts the restaurant interface as soon as the container is attached, letting you test the application without manual setup.
 
