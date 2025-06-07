@@ -36,3 +36,17 @@ The project includes a devcontainer configuration. When used inside GitHub Codes
 
 The devcontainer provides a ready-to-use development environment. It sets up Python 3 with all required packages and starts the restaurant interface as soon as the container is attached, letting you test the application without manual setup.
 
+
+## FastAPI backend
+
+A small API built with FastAPI is available under `backend/`. It stores orders in a SQLite database and exposes a few endpoints:
+
+- `POST /orders` — create a new order.
+- `GET /orders` — list all orders.
+- `PUT /orders/{id}/assign` — assign a courier to an order.
+
+Run it locally with:
+
+```bash
+uvicorn backend.main:app --reload
+```
