@@ -7,11 +7,11 @@ MiniCoop is a simple demo of a food delivery workflow built with [Streamlit](htt
 - **Admin** (`admin.py`) – assign a courier to each order.
 - **Courrier** (`coursier.py`) – see the deliveries assigned to a given courier.
 
-Orders are stored in a CSV file named `data.csv`. The file is listed in `.gitignore` so that example orders are not committed to the repository. Each component of the workflow reads or writes to this file. The interfaces are meant for local demonstrations, so there is no authentication or persistence beyond the CSV file.
+Orders are now stored in a SQLite database managed by the FastAPI backend. The old `data.csv` file has been replaced by API calls so that each interface communicates with the backend instead of writing to a CSV file.
 
 ## Running locally
 
-Make sure `streamlit` is installed and run any of the interfaces. For example to launch the restaurant view:
+Start the FastAPI backend first and then run any of the Streamlit interfaces. For example to launch the restaurant view:
 
 ```bash
 streamlit run resto.py
@@ -26,7 +26,7 @@ admin.py   # admin interface
 client.py  # customer order form
 coursier.py  # courier dashboard
 resto.py   # restaurant interface
-data.csv   # shared order storage
+backend/   # FastAPI application
 .devcontainer/devcontainer.json  # configuration for Codespaces/devcontainers
 ```
 
