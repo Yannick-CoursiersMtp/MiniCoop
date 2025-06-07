@@ -1,0 +1,9 @@
+__pycache__/
+*.py[cod]
+*.csv
+.pytest_cache/
+# Additional typical Python ignores
+*.egg-info/
+*.egg
+dist/
+build/

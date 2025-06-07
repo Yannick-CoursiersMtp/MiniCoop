@@ -1,5 +1,4 @@
 import streamlit as st
-import pandas as pd
 from orders import load_orders, assign_courier
 
 st.title("MiniCoop - Interface Admin")

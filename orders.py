@@ -1,3 +1,5 @@
+"""Utility functions for managing delivery orders stored as CSV files."""
+
 import pandas as pd
 from datetime import datetime
 from pathlib import Path
